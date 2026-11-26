@@ -74,6 +74,21 @@ git push -u origin main
 | Health check | `/api/health` |
 | Node | 22 (`.node-version`) |
 
+### Created the service manually instead of with a Blueprint?
+
+Under **Settings → Build & Deploy**, set these, then click **Manual Deploy → Clear build cache & deploy**:
+
+| Setting | Value |
+|---|---|
+| Root Directory | *(leave empty)* |
+| Build Command | `npm run render-build` |
+| Start Command | `npm start` |
+| Health Check Path | `/api/health` |
+
+Under **Environment**, add `NODE_ENV=production`, `MONGO_URI`, `JWT_SECRET` (any long random text), `ADMIN_EMAIL` and `ADMIN_PASSWORD`.
+
+If the site shows **"Cannot GET /"** or **"The server is running, but the website was not built"**, the Build Command is still `npm install`.
+
 ## 4. Load your data
 
 - **Teams and questions:** import them on the live site (**Teams → Import**, **Questions → Import CSV / Excel**). Or seed the sample data from your laptop against Atlas:

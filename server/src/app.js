@@ -36,6 +36,21 @@ export function createApp() {
   if (fs.existsSync(path.join(config.clientDist, 'index.html'))) {
     app.use(express.static(config.clientDist, { maxAge: '1h', index: false }));
     app.get('*', (_req, res) => res.sendFile(path.join(config.clientDist, 'index.html')));
+  } else if (config.isProd) {
+    // Deployed without building the React app — say so clearly instead of "Cannot GET /"
+    console.warn(`[setup] Client build not found at ${config.clientDist}. Build command must be: npm run render-build`);
+    app.get('*', (_req, res) =>
+      res
+        .status(503)
+        .type('html')
+        .send(
+          '<!doctype html><meta charset="utf-8"><title>Arena not built</title>' +
+            '<body style="font-family:system-ui;background:#100C0D;color:#E3DCD2;padding:40px;line-height:1.6">' +
+            '<h2 style="color:#CC8B65">The server is running, but the website was not built.</h2>' +
+            '<p>Set the Render <b>Build Command</b> to <code>npm run render-build</code> and the <b>Start Command</b> to <code>npm start</code>, then redeploy.</p>' +
+            '<p>API status: <a style="color:#6FBF9C" href="/api/health">/api/health</a></p></body>'
+        )
+    );
   }
 
   app.use(errorHandler);
