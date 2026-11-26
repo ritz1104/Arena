@@ -1,0 +1,34 @@
+# Render Blueprint — BUZZ OR LOSE – THE ARENA
+# One web service serves the React app, the REST API and Socket.IO from a single URL.
+# Database: MongoDB Atlas (Render has no managed MongoDB) — paste its connection string as MONGO_URI.
+services:
+  - type: web
+    name: buzz-or-lose-arena
+    runtime: node
+    # starter (paid) stays awake and supports a persistent disk; the free plan sleeps after
+    # 15 idle minutes and has no disk, so uploaded videos/sounds would be lost on every restart.
+    plan: starter
+    region: singapore
+    buildCommand: npm run render-build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URI
+        sync: false # MongoDB Atlas connection string, e.g. mongodb+srv://user:pass@cluster.xxxx.mongodb.net/buzz_or_lose
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_NAME
+        value: Arena Host
+      - key: ADMIN_EMAIL
+        sync: false # first admin login (created automatically on first start)
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: UPLOAD_DIR
+        value: /var/data/uploads
+    disk:
+      name: arena-uploads
+      mountPath: /var/data
+      sizeGB: 5

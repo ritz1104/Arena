@@ -1,0 +1,119 @@
+.wrap {
+  position: relative;
+  flex-shrink: 0;
+  max-width: 100%;
+  aspect-ratio: 1;
+  container-type: inline-size;
+}
+.svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: drop-shadow(0 20px 60px rgba(0, 0, 0, 0.6));
+}
+.halo {
+  position: absolute;
+  inset: -6%;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, rgba(204, 139, 101, 0.5), rgba(44, 122, 99, 0.35), rgba(111, 191, 156, 0.4), rgba(230, 185, 143, 0.3), rgba(204, 139, 101, 0.5));
+  filter: blur(40px);
+  opacity: 0.55;
+  animation: spin 18s linear infinite;
+  pointer-events: none;
+}
+.pointer {
+  position: absolute;
+  left: 50%;
+  top: -3.5%;
+  width: 8.5%;
+  transform: translateX(-50%);
+  transform-origin: 50% 30%;
+  z-index: 3;
+  filter: drop-shadow(0 0 10px rgba(230, 185, 143, 0.9)) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.6));
+}
+.label {
+  fill: #fff;
+  font-family: var(--font-display);
+  font-weight: 700;
+  paint-order: stroke;
+  stroke: rgba(0, 0, 0, 0.35);
+  stroke-width: 3px;
+  letter-spacing: 0.01em;
+  pointer-events: none;
+}
+.lightA,
+.lightB {
+  fill: #F1DCC6;
+  filter: drop-shadow(0 0 4px #E6B98F);
+}
+.lightA {
+  animation: blink 1s steps(2) infinite;
+}
+.lightB {
+  animation: blink 1s steps(2) infinite 0.5s;
+}
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.25;
+  }
+}
+.hubRing {
+  transform-origin: 250px 250px;
+  animation: spin 12s linear infinite;
+}
+.winSeg {
+  animation: winflash 0.5s ease-in-out infinite alternate;
+}
+@keyframes winflash {
+  to {
+    filter: brightness(1.6) saturate(1.3);
+  }
+}
+.hub {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 20%;
+  height: 20%;
+  font-size: 3.4cqw;
+  border-radius: 50%;
+  border: 0;
+  background: radial-gradient(circle at 50% 35%, #EBC4A6, #CC8B65 55%, #8A5434 100%);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  box-shadow:
+    0 0 0 4px rgba(255, 255, 255, 0.08),
+    0 0 40px rgba(204, 139, 101, 0.7),
+    inset 0 -6px 14px rgba(0, 0, 0, 0.35);
+  cursor: default;
+  z-index: 2;
+  transition:
+    transform 0.15s,
+    box-shadow 0.2s;
+}
+.hub:not(:disabled) {
+  cursor: pointer;
+  animation: hubPulse 1.6s ease-in-out infinite;
+}
+.hub:not(:disabled):hover {
+  transform: translate(-50%, -50%) scale(1.06);
+}
+.hub:disabled {
+  background: radial-gradient(circle at 50% 35%, #2E2A28, #14231F 70%);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.05);
+  color: var(--muted);
+}
+@keyframes hubPulse {
+  50% {
+    box-shadow:
+      0 0 0 8px rgba(204, 139, 101, 0.15),
+      0 0 60px rgba(204, 139, 101, 0.9),
+      inset 0 -6px 14px rgba(0, 0, 0, 0.35);
+  }
+}

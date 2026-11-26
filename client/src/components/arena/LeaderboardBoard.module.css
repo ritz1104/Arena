@@ -1,0 +1,115 @@
+.board {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+}
+.big {
+  font-size: 1em;
+  gap: 0.45em;
+}
+.row {
+  display: grid;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(14, 32, 27, 0.55);
+  border: 1px solid var(--line);
+  position: relative;
+  overflow: hidden;
+}
+.round .row {
+  grid-template-columns: 4.2em minmax(0, 1fr) 6em 5em 5em 5em 8em;
+}
+.overall .row {
+  grid-template-columns: 4.2em minmax(0, 1fr) 6em 5em 4.5em 5em 5em 8em;
+}
+.big .row {
+  padding: 0.7em 1.1em;
+  border-radius: 0.8em;
+  gap: 1em;
+}
+.head {
+  background: transparent;
+  border-color: transparent;
+  font-size: 0.78em;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  font-weight: 600;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.r {
+  text-align: right;
+}
+.rank {
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+  font-weight: 700;
+  font-size: 1.15em;
+  color: var(--muted);
+}
+.rank svg {
+  width: 1.05em;
+  height: 1.05em;
+}
+.top {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--rc) 16%, transparent), rgba(14, 32, 27, 0.55) 60%);
+  border-color: color-mix(in srgb, var(--rc) 40%, transparent);
+}
+.top .rank {
+  color: var(--rc);
+}
+.top::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--rc);
+  box-shadow: 0 0 14px var(--rc);
+}
+.team {
+  min-width: 0;
+}
+.name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.08em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+}
+.members {
+  font-size: 0.78em;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pts {
+  font-size: 1.5em;
+  font-weight: 700;
+}
+.out {
+  opacity: 0.55;
+}
+.empty {
+  padding: 2em;
+  text-align: center;
+  color: var(--muted);
+}
+@media (max-width: 760px) {
+  .board:not(.big) .row {
+    grid-template-columns: 3em minmax(0, 1fr) 4em 6.5em;
+  }
+  .board:not(.big) .row > :nth-child(n + 4):not(:last-child) {
+    display: none;
+  }
+}

@@ -1,0 +1,122 @@
+.wrap {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8em;
+  text-align: center;
+  overflow: hidden;
+  padding: 1em;
+}
+.rays {
+  position: absolute;
+  left: 50%;
+  top: 38%;
+  width: 160vmax;
+  height: 160vmax;
+  transform: translate(-50%, -50%);
+  background: repeating-conic-gradient(from 0deg, rgba(230, 185, 143, 0.1) 0deg 7deg, transparent 7deg 20deg);
+  mask-image: radial-gradient(circle, #000 0%, transparent 55%);
+  -webkit-mask-image: radial-gradient(circle, #000 0%, transparent 55%);
+  animation: spin 40s linear infinite;
+  pointer-events: none;
+}
+.kicker {
+  font-size: 1.1em;
+  color: var(--muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  z-index: 1;
+}
+.bigTrophy {
+  width: 9em;
+  height: 9em;
+  color: #E6B98F;
+  filter: drop-shadow(0 0 1.2em rgba(230, 185, 143, 0.9));
+  animation: floaty 3s ease-in-out infinite;
+  z-index: 1;
+}
+.title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 3.4em;
+  letter-spacing: 0.3em;
+  background: linear-gradient(90deg, #E6B98F, #F5EADF, #E6B98F);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 3s linear infinite;
+  z-index: 1;
+}
+.champCard {
+  z-index: 1;
+  padding: 1.6em 3.4em;
+  border-radius: 1.5em;
+  background: radial-gradient(100% 130% at 50% 0%, rgba(230, 185, 143, 0.3), rgba(14, 32, 27, 0.92) 70%);
+  border: 2px solid rgba(230, 185, 143, 0.75);
+  box-shadow:
+    0 0 0 0.4em rgba(230, 185, 143, 0.12),
+    0 0 6em rgba(230, 185, 143, 0.45);
+}
+.champName {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 4.4em;
+  line-height: 1.05;
+}
+.champMembers {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4em 1.4em;
+  margin-top: 0.6em;
+  font-size: 1.2em;
+  color: #F1DCC6;
+}
+.champMembers svg {
+  color: #E6B98F;
+  vertical-align: -0.05em;
+}
+.stats {
+  display: flex;
+  justify-content: center;
+  gap: 3em;
+  margin-top: 1em;
+}
+.stats div {
+  display: flex;
+  flex-direction: column;
+}
+.stats b {
+  font-size: 2.6em;
+  line-height: 1;
+}
+.stats span {
+  font-size: 0.8em;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.runner {
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  padding: 0.8em 1.6em;
+  border-radius: 999px;
+  background: rgba(14, 32, 27, 0.85);
+  border: 1px solid rgba(227, 220, 210, 0.4);
+  font-size: 1.2em;
+}
+.runner svg {
+  color: #D6CEC3;
+}
+.runnerLabel {
+  letter-spacing: 0.2em;
+  font-size: 0.75em;
+  color: var(--muted);
+  font-weight: 700;
+}

@@ -1,0 +1,96 @@
+.page {
+  --sc: var(--side-a);
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px;
+  background: radial-gradient(80% 60% at 50% 40%, color-mix(in srgb, var(--sc) 22%, transparent), var(--bg) 70%);
+  user-select: none;
+  touch-action: manipulation;
+}
+.right {
+  --sc: var(--side-b);
+}
+.top {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.side {
+  font-size: 12px;
+  letter-spacing: 0.25em;
+  font-weight: 700;
+  color: var(--sc);
+}
+.team {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(26px, 6vw, 56px);
+  text-align: center;
+}
+.buzz {
+  width: min(70vw, 60vh);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 0;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(22px, 5vw, 48px);
+  color: #FBF4EC;
+  letter-spacing: 0.06em;
+  background: radial-gradient(circle at 50% 35%, #4A4440, #1A1716 70%);
+  box-shadow:
+    0 2vh 0 #0C1613,
+    0 0 0 1.2vh rgba(255, 255, 255, 0.05);
+  transition:
+    background 0.2s,
+    box-shadow 0.2s;
+  padding: 10%;
+  text-align: center;
+}
+.open {
+  color: var(--on-accent);
+  background: radial-gradient(circle at 50% 30%, color-mix(in srgb, var(--sc) 55%, #fff), var(--sc) 55%, color-mix(in srgb, var(--sc) 60%, #000));
+  box-shadow:
+    0 2vh 0 color-mix(in srgb, var(--sc) 40%, #000),
+    0 0 8vh color-mix(in srgb, var(--sc) 70%, transparent);
+  animation: pulse 0.9s infinite;
+}
+.mine {
+  background: radial-gradient(circle at 50% 30%, #CDEBDC, #6FBF9C 55%, #1F6B4E);
+  color: #01231B;
+  box-shadow:
+    0 2vh 0 #014A3A,
+    0 0 8vh rgba(111, 191, 156, 0.8);
+}
+.locked {
+  opacity: 0.55;
+}
+.idle,
+.wait {
+  font-size: clamp(16px, 3.2vw, 30px);
+  color: var(--muted);
+}
+.win {
+  outline: 1.2vh solid #6FBF9C;
+}
+.lose {
+  outline: 1.2vh solid #C4583F;
+}
+.foot {
+  color: var(--muted);
+  font-size: 13px;
+}
+.error {
+  margin: auto;
+  max-width: 420px;
+  text-align: center;
+  color: #E9B3A5;
+}

@@ -1,0 +1,8 @@
+Question,Category,Hint,Answer,Difficulty,Explanation,Rounds
+"Which HTML element is used to embed a video?",HTML Fundamentals,"It shares its name with the media type.","<video>",Easy,,
+"What does the CSS property z-index control?",CSS Fundamentals,"Think about the third dimension.","Stacking order of positioned elements",Medium,"Higher values sit on top.",
+"What does Array.prototype.reduce return?",JavaScript Fundamentals,"It folds an array into one thing.","A single accumulated value",Medium,,"2,3"
+"Which method removes an element from the DOM?",JavaScript DOM Manipulation,"It is called on the element itself.","element.remove()",Easy,,
+"What is the purpose of a subnet mask?",Computer Networks,"It splits an IP address in two parts.","It separates the network part from the host part of an IP address",Hard,,
+"What does REST stand for?",API Design,"Representational …","Representational State Transfer",Medium,,
+"Missing answer row",HTML Fundamentals,,,Easy,,
