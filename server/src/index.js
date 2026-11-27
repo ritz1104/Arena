@@ -1,7 +1,7 @@
 import http from 'node:http';
 import { config } from './config.js';
 import { connectDB } from './db.js';
-import app from './app.js';
+import { createApp } from './app.js';
 import { initSocket } from './socket/index.js';
 import { User, ensureDefaultCategories, getSettings } from './models/index.js';
 import { recoverLiveBattle } from './services/battleEngine.js';
@@ -23,6 +23,7 @@ async function main() {
   await getSettings();
   await ensureAdmin();
 
+  const app = createApp();
   const server = http.createServer(app);
   initSocket(server);
 

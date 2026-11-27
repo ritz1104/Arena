@@ -6,7 +6,6 @@ import { emitFx, emitLeaderboardChanged } from './broadcast.js';
 import { requireActive, createBattle, finalizeChampion, getCurrentTournament } from './tournamentEngine.js';
 import { overallLeaderboard } from './leaderboard.js';
 import { hasId } from './pool.js';
-import { isImageKitUrl } from './imagekit.js';
 
 /*
  * PLAYOFF FORMAT
@@ -347,7 +346,7 @@ export async function setSubmission({ teamId, url, link, fileName }, ctx) {
   const { t, round, vf } = await loadFinal();
   assert(vf.status !== 'results', 'Results are final.');
   assert(hasId(round.participatingTeams, teamId), 'That team is not a finalist.');
-  if (url !== undefined) assert(url === '' || /^\/uploads\/videos\/[a-z0-9._-]+$/i.test(url) || isImageKitUrl(url), 'Invalid video file.');
+  if (url !== undefined) assert(url === '' || /^\/uploads\/videos\/[a-z0-9._-]+$/i.test(url), 'Invalid video file.');
   if (link !== undefined) {
     link = String(link).trim();
     assert(link === '' || (/^https?:\/\/\S+$/i.test(link) && link.length <= 500), 'Enter a valid http(s) link.');

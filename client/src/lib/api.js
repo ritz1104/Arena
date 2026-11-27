@@ -1,7 +1,4 @@
 const TOKEN_KEY = 'arena_token';
-const API_BASE_URL = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
-
-export const apiUrl = (path) => `${API_BASE_URL}${path}`;
 
 export const storage = {
   get(key, fallback = null) {
@@ -50,7 +47,7 @@ export async function api(path, { method = 'GET', body, form, signal } = {}) {
   }
   let res;
   try {
-    res = await fetch(apiUrl(`/api${path}`), { method, headers, body: payload, signal });
+    res = await fetch(`/api${path}`, { method, headers, body: payload, signal });
   } catch (e) {
     if (e.name === 'AbortError') throw e;
     throw Object.assign(new Error('Cannot reach the server. Check that it is running.'), { status: 0 });

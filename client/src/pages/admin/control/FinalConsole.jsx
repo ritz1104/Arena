@@ -5,7 +5,7 @@ import {
 } from 'lucide-react';
 import { useLive } from '../../../context/LiveContext.jsx';
 import { useConfirm } from '../../../context/ConfirmContext.jsx';
-import { api, apiUrl } from '../../../lib/api.js';
+import { api } from '../../../lib/api.js';
 import { useWorkTimer, fmtClock } from '../../../hooks/useWorkTimer.js';
 import Modal from '../../../components/ui/Modal.jsx';
 
@@ -62,7 +62,7 @@ function Submissions({ f, teams }) {
     const form = new FormData();
     form.append('teamId', teamId);
     form.append('file', file);
-    xhr.open('POST', apiUrl('/api/final/video'));
+    xhr.open('POST', '/api/final/video');
     const token = localStorage.getItem('arena_token');
     if (token) xhr.setRequestHeader('Authorization', `Bearer ${token}`);
     xhr.upload.onprogress = (e) => e.lengthComputable && setProgress(Math.round((e.loaded / e.total) * 100));

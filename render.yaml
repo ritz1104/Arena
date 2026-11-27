@@ -5,8 +5,8 @@ services:
   - type: web
     name: buzz-or-lose-arena
     runtime: node
-    # starter (paid) stays awake and supports a persistent disk. New media is stored in ImageKit;
-    # the disk preserves any files uploaded locally before the ImageKit integration.
+    # starter (paid) stays awake and supports a persistent disk; the free plan sleeps after
+    # 15 idle minutes and has no disk, so uploaded videos/sounds would be lost on every restart.
     plan: starter
     region: singapore
     buildCommand: npm run render-build
@@ -25,12 +25,6 @@ services:
       - key: ADMIN_EMAIL
         sync: false # first admin login (created automatically on first start)
       - key: ADMIN_PASSWORD
-        sync: false
-      - key: IMAGEKIT_PUBLIC_KEY
-        sync: false
-      - key: IMAGEKIT_PRIVATE_KEY
-        sync: false
-      - key: IMAGEKIT_URL_ENDPOINT
         sync: false
       - key: UPLOAD_DIR
         value: /var/data/uploads

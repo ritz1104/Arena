@@ -1,29 +1,12 @@
 import multer from 'multer';
 import path from 'node:path';
 import fs from 'node:fs';
-import fsp from 'node:fs/promises';
-import os from 'node:os';
 import crypto from 'node:crypto';
+import { config } from '../config.js';
 import { AppError } from '../utils/errors.js';
 
 const DATA_EXT = ['.csv', '.xlsx', '.pdf', '.txt'];
 const AUDIO_EXT = ['.mp3', '.wav', '.ogg', '.m4a', '.webm'];
-const VIDEO_EXT = ['.mp4', '.webm', '.mov', '.m4v'];
-const stagingDir = path.join(os.tmpdir(), 'arena-upload-staging');
-fs.mkdirSync(stagingDir, { recursive: true });
-
-const stagingStorage = multer.diskStorage({
-  destination: stagingDir,
-  filename: (_req, file, cb) => cb(null, `${crypto.randomBytes(16).toString('hex')}${path.extname(file.originalname).toLowerCase()}`),
-});
-
-export async function removeStagedUpload(file) {
-  try {
-    await fsp.unlink(file.path);
-  } catch (error) {
-    if (error.code !== 'ENOENT') throw error;
-  }
-}
 
 /** Team / question import: kept in memory, parsed, never written to disk. */
 export const dataUpload = multer({
@@ -36,8 +19,22 @@ export const dataUpload = multer({
   },
 });
 
+const soundDir = path.join(config.uploadDir, 'sounds');
+fs.mkdirSync(soundDir, { recursive: true });
+
 export const soundUpload = multer({
-  storage: stagingStorage,
+  storage: multer.diskStorage({
+    destination: soundDir,
+    filename: (_req, file, cb) => {
+      const e = path.extname(file.originalname).toLowerCase();
+      const base = path
+        .basename(file.originalname, e)
+        .replace(/[^a-z0-9-_]+/gi, '-')
+        .slice(0, 40)
+        .toLowerCase();
+      cb(null, `${base || 'sound'}-${crypto.randomBytes(3).toString('hex')}${e}`);
+    },
+  }),
   limits: { fileSize: 8 * 1024 * 1024, files: 1 },
   fileFilter: (_req, file, cb) => {
     const e = path.extname(file.originalname).toLowerCase();
@@ -48,9 +45,16 @@ export const soundUpload = multer({
   },
 });
 
-/** Grand Final solution videos are staged temporarily before being sent to ImageKit. */
+const videoDir = path.join(config.uploadDir, 'videos');
+fs.mkdirSync(videoDir, { recursive: true });
+const VIDEO_EXT = ['.mp4', '.webm', '.mov', '.m4v'];
+
+/** Grand Final solution videos (played on the projector; served with HTTP range support). */
 export const videoUpload = multer({
-  storage: stagingStorage,
+  storage: multer.diskStorage({
+    destination: videoDir,
+    filename: (_req, file, cb) => cb(null, `final-${Date.now()}-${crypto.randomBytes(4).toString('hex')}${path.extname(file.originalname).toLowerCase()}`),
+  }),
   limits: { fileSize: 1024 * 1024 * 1024, files: 1 }, // 1 GB
   fileFilter: (_req, file, cb) => {
     const e = path.extname(file.originalname).toLowerCase();
@@ -59,4 +63,4 @@ export const videoUpload = multer({
   },
 });
 
-export { AUDIO_EXT };
+export { soundDir, AUDIO_EXT, videoDir };

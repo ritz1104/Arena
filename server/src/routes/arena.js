@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import fs from 'node:fs/promises';
 import path from 'node:path';
 import { z } from 'zod';
 import {
@@ -6,8 +7,7 @@ import {
 } from '../models/index.js';
 import { asyncH, AppError } from '../utils/errors.js';
 import { requireRole } from '../middleware/auth.js';
-import { soundUpload, AUDIO_EXT, videoUpload, removeStagedUpload } from '../middleware/upload.js';
-import { deleteImageKitFile, isImageKitUrl, listImageKitFiles, uploadImageKitFile } from '../services/imagekit.js';
+import { soundUpload, soundDir, AUDIO_EXT, videoUpload } from '../middleware/upload.js';
 import { playoffSeeds, DEFAULT_CRITERIA } from '../services/playoffEngine.js';
 import { executeCommand } from '../services/commands.js';
 import { getSnapshot, broadcastState, getIO } from '../services/broadcast.js';
@@ -121,32 +121,22 @@ r.get('/rounds/wildcard-candidates', asyncH(async (_req, res) => res.json({ cand
 r.get('/rounds/playoff-seeds', asyncH(async (_req, res) => res.json(await playoffSeeds())));
 r.get('/final/default-criteria', (_req, res) => res.json({ criteria: DEFAULT_CRITERIA }));
 
-/* Grand Final video upload — stored in ImageKit, then attached through the normal audited command path. */
+/* Grand Final video upload — stored on disk, then attached through the normal audited command path. */
 r.post(
   '/final/video',
   videoUpload.single('file'),
   asyncH(async (req, res) => {
     if (!req.file) throw new AppError('Choose a video file.', 400);
-    let uploaded;
     try {
-      uploaded = await uploadImageKitFile(req.file, '/arena/videos');
       const result = await executeCommand(
         'final.submission',
-        { teamId: String(req.body.teamId || ''), url: uploaded.url, fileName: req.file.originalname.slice(0, 120) },
+        { teamId: String(req.body.teamId || ''), url: `/uploads/videos/${req.file.filename}`, fileName: req.file.originalname.slice(0, 120) },
         { user: req.user }
       );
       res.status(201).json({ ok: true, result });
     } catch (e) {
-      if (uploaded) {
-        try {
-          await deleteImageKitFile(uploaded.fileId);
-        } catch (cleanupError) {
-          console.error('Failed to remove an unlinked ImageKit video:', cleanupError);
-        }
-      }
+      await fs.unlink(req.file.path).catch(() => {});
       throw e;
-    } finally {
-      await removeStagedUpload(req.file);
     }
   })
 );
@@ -222,7 +212,7 @@ r.put(
     for (const [k, v] of Object.entries(body.sound.events)) {
       if (!SOUND_EVENTS[k]) delete body.sound.events[k];
       else if (v.source === 'builtin' && !SOUND_PRESETS.includes(v.preset)) throw new AppError(`Unknown sound preset for ${k}.`);
-      else if (v.source === 'custom' && !(/^\/uploads\/sounds\/[a-z0-9._-]+$/i.test(v.url) || isImageKitUrl(v.url))) throw new AppError(`Choose an uploaded file for ${k}.`);
+      else if (v.source === 'custom' && !/^\/uploads\/sounds\/[a-z0-9._-]+$/i.test(v.url)) throw new AppError(`Choose an uploaded file for ${k}.`);
     }
     const s = await getSettings();
     Object.assign(s, { ...body, sound: { ...body.sound, events: { ...s.sound.events, ...body.sound.events } } });
@@ -249,12 +239,8 @@ r.post(
 r.get(
   '/sounds',
   asyncH(async (_req, res) => {
-    const files = await listImageKitFiles('/arena/sounds');
-    res.json({
-      sounds: files
-        .filter((file) => file.type === 'file' && AUDIO_EXT.includes(path.extname(file.name).toLowerCase()))
-        .map((file) => ({ name: file.name, url: file.url })),
-    });
+    const files = (await fs.readdir(soundDir).catch(() => [])).filter((f) => AUDIO_EXT.includes(path.extname(f).toLowerCase()));
+    res.json({ sounds: files.map((f) => ({ name: f, url: `/uploads/sounds/${f}` })) });
   })
 );
 
@@ -263,12 +249,7 @@ r.post(
   soundUpload.single('file'),
   asyncH(async (req, res) => {
     if (!req.file) throw new AppError('Choose an audio file.', 400);
-    try {
-      const file = await uploadImageKitFile(req.file, '/arena/sounds');
-      res.status(201).json({ sound: { name: file.name, url: file.url } });
-    } finally {
-      await removeStagedUpload(req.file);
-    }
+    res.status(201).json({ sound: { name: req.file.filename, url: `/uploads/sounds/${req.file.filename}` } });
   })
 );
 
@@ -277,9 +258,9 @@ r.delete(
   asyncH(async (req, res) => {
     const name = path.basename(req.params.name);
     if (!AUDIO_EXT.includes(path.extname(name).toLowerCase())) throw new AppError('Invalid file.', 400);
-    const [file] = await listImageKitFiles('/arena/sounds').then((files) => files.filter((entry) => entry.type === 'file' && entry.name === name));
-    if (!file) throw new AppError('File not found.', 404);
-    await deleteImageKitFile(file.fileId);
+    await fs.unlink(path.join(soundDir, name)).catch(() => {
+      throw new AppError('File not found.', 404);
+    });
     const s = await getSettings();
     let changed = false;
     for (const [k, v] of Object.entries(s.sound.events)) {

@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
 import toast from 'react-hot-toast';
-import { api, apiUrl, auth, newActionId } from '../lib/api.js';
+import { api, auth, newActionId } from '../lib/api.js';
 import { sound, FX_SOUND } from '../lib/sound.js';
 
 const LiveCtx = createContext(null);
@@ -25,17 +25,13 @@ export function LiveProvider({ role = 'audience', buzzer, children }) {
 
   useEffect(() => {
     sound.setRole(role === 'host' ? 'host' : 'audience');
-    fetch(apiUrl('/api/public/sound'))
+    fetch('/api/public/sound')
       .then((r) => r.json())
       .then((c) => sound.configure(c))
       .catch(() => {});
 
     const authPayload = role === 'host' ? { token: auth.token } : role === 'buzzer' ? { buzzerKey: buzzer?.key, side: buzzer?.side } : {};
-    const socket = io(import.meta.env.VITE_API_URL || undefined, {
-      auth: authPayload,
-      transports: ['websocket', 'polling'],
-      reconnectionDelayMax: 4000,
-    });
+    const socket = io({ auth: authPayload, transports: ['websocket', 'polling'], reconnectionDelayMax: 4000 });
     socketRef.current = socket;
 
     const syncClock = () => {

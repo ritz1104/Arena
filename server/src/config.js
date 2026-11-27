@@ -11,11 +11,6 @@ export const config = {
   mongoUri: process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/buzz_or_lose',
   jwtSecret: process.env.JWT_SECRET || 'dev-insecure-secret',
   clientOrigin: (process.env.CLIENT_ORIGIN || process.env.RENDER_EXTERNAL_URL || 'http://localhost:5173').split(',').map((s) => s.trim()),
-  imagekit: {
-    publicKey: process.env.IMAGEKIT_PUBLIC_KEY || '',
-    privateKey: process.env.IMAGEKIT_PRIVATE_KEY || '',
-    urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT || '',
-  },
   admin: {
     name: process.env.ADMIN_NAME || 'Arena Host',
     email: process.env.ADMIN_EMAIL || 'admin@arena.local',
